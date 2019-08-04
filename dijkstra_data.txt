@@ -9,3 +9,5 @@
 4 5 3
 4 6 5
 5 6 9
+
+https://juppy.hatenablog.com/entry/2018/11/01/蟻本_python_単一最短経路法2（ダイクストラ法）_競技プ
