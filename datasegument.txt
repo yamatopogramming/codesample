@@ -1,0 +1,12 @@
+import math
+a,b,c,d,e = map(int,input().split(' '))
+road_info=[input().split(' ') for i in range(a)]
+inter_info=[input().split(' ') for i in range(b)]
+park_info=[input().split(' ') for i in range(c)]
+ship_info=[input().split(' ') for i in range(d)]
+query=[input().split(' ') for i in range(e)]
+#print(road_info)
+#print(inter_info)
+#print(park_info)
+#print(ship_info)
+print(query)
