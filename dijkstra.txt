@@ -29,5 +29,5 @@ cost = [[float("inf") for i in range(n)] for i in range(n)]
 for i in range(w):
     x,y,z = map(int,input().split())
     cost[x][y] = z
-    cost[y][x] = z
+    #cost[y][x] = z
 print(dijkstra(0,n,w,cost))
