@@ -10,10 +10,17 @@ query=[input().split(' ') for i in range(e)]#クエリ
 #print(inter_info)
 #print(park_info)
 #print(ship_info)
+
 inter=[]#交差点の空集合
 for i in range(b):
   inter.append(inter_info[i][0])
-node=len(collections.Counter(inter))+c+d#交通ネットワークのノード数
+  
+park=[]
+for i in range(c):
+ park.append(park_info[i][0])
+park_replace = [s.replace('ES', 'SE') for s in park]#c(park_info)のESをSEに変更
+
+node=len(collections.Counter(inter))+len(collections.Counter(park_replace))+d#交通ネットワークのノード数
 edge=node + a#交通ネットワークのエッジ数
 #print(query)
 print(node)
