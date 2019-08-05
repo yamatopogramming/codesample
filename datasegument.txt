@@ -5,6 +5,7 @@ inter_info=[input().split(' ') for i in range(b)]
 park_info=[input().split(' ') for i in range(c)]
 ship_info=[input().split(' ') for i in range(d)]
 query=[input().split(' ') for i in range(e)]
+node=len(collections.Counter(inter_info[0]))+c+d
 #print(road_info)
 #print(inter_info)
 #print(park_info)
