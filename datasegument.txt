@@ -10,6 +10,10 @@ query=[input().split(' ') for i in range(e)]
 #print(inter_info)
 #print(park_info)
 #print(ship_info)
-node=len(collections.Counter(inter_info[0]))+c+d
+inter=[]
+for i in range(b):
+  inter.append(inter_info[i][0])
+node=len(collections.Counter(inter))+c+d
 #print(query)
 print(node)
+#print(inter)
