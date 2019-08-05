@@ -1,19 +1,20 @@
 import math
 import collections
-a,b,c,d,e = map(int,input().split(' '))
-road_info=[input().split(' ') for i in range(a)]
-inter_info=[input().split(' ') for i in range(b)]
-park_info=[input().split(' ') for i in range(c)]
-ship_info=[input().split(' ') for i in range(d)]
-query=[input().split(' ') for i in range(e)]
+a,b,c,d,e = map(int,input().split(' '))#ヘッダ(a:道路情報の行数、b:交差点情報の行数、c:駐車可能箇所情報の行数、d:配達先情報の行数、e:クエリの行数)
+road_info=[input().split(' ') for i in range(a)]#道路情報
+inter_info=[input().split(' ') for i in range(b)]#交差点情報
+park_info=[input().split(' ') for i in range(c)]#駐車可能箇所情報
+ship_info=[input().split(' ') for i in range(d)]#配達先情報
+query=[input().split(' ') for i in range(e)]#クエリ
 #print(road_info)
 #print(inter_info)
 #print(park_info)
 #print(ship_info)
-inter=[]
+inter=[]#交差点の空集合
 for i in range(b):
   inter.append(inter_info[i][0])
-node=len(collections.Counter(inter))+c+d
+node=len(collections.Counter(inter))+c+d#交通ネットワークのノード数
+edge=node + a#交通ネットワークのエッジ数
 #print(query)
 print(node)
 #print(inter)
