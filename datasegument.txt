@@ -20,13 +20,13 @@ park_replace = list(set(park_replace))#set()で重複した要素を削除
 
 keisan0=[[] for i in range(a)]
 keisan1=[[] for i in range(a)]
-for i in range(len(road)):
+for i in range(a):
   for j in range(c):
-    if park_info[j][1]==road[i]:
+    if park_info[j][1]==road_info[i][0]:
       keisan0[i].append([park_info[j][0],park_info[j][2]])
       keisan1[i].append([park_info[j][0],park_info[j][2]])
   for m in range(d):
-    if ship_info[m][1]==road[i]:
+    if ship_info[m][1]==road_info[i][0]:
       keisan1[i].append([ship_info[m][0],ship_info[m][2]])
 
 
