@@ -18,16 +18,66 @@ for i in range(c):
 park_replace = [s.replace('ES', 'SE') for s in park]#c(park_info)のESをSEに変更
 park_replace = list(set(park_replace))#set()で重複した要素を削除
 
-keisan0=[[] for i in range(a)]
-keisan1=[[] for i in range(a)]
+
+
+
+#各道路に含まれるノードとそのSからの距離
+keisan_sharyo=[[] for i in range(a)]
+keisan_daisha=[[] for i in range(a)]
 for i in range(a):
   for j in range(c):
     if park_info[j][1]==road_info[i][0]:
-      keisan0[i].append([park_info[j][0],park_info[j][2]])
-      keisan1[i].append([park_info[j][0],park_info[j][2]])
+      keisan_sharyo[i].append([park_info[j][0],park_info[j][2]])
+      keisan_daisha[i].append([park_info[j][0],park_info[j][2]])
   for m in range(d):
     if ship_info[m][1]==road_info[i][0]:
-      keisan1[i].append([ship_info[m][0],ship_info[m][2]])
+      keisan_daisha[i].append([ship_info[m][0],ship_info[m][2]])
+#print("=====")
+#print("車両："+str(keisan_sharyo))
+#print("=====")
+#print("台車："+str(keisan_daisha))
+
+
+
+
+#AB地点間の距離を求める(A B 距離コスト)
+cost0=[[] for i in range(a)]
+#まず各道路の始点に一番近い&遠いノードとSからの距離を出す
+node_min_sharyo = []
+node_max_sharyo = []
+node_min_daisha = []
+node_max_daisha = []
+for i in range(a):
+  keisan_sharyo_sort = sorted(keisan_sharyo[i], key=lambda x: x[1])
+  if not keisan_sharyo_sort:#道路上にノードがないとき
+    keisan_sharyo_sort.append(0)#0を入れる．
+  keisan_daisha_sort = sorted(keisan_daisha[i], key=lambda x: x[1])
+  if not keisan_daisha_sort:#道路上にノードがないとき
+    keisan_daisha_sort.append(0)#0を入れる．
+  node_min_sharyo.append(keisan_sharyo_sort[0])
+  node_max_sharyo.append(keisan_sharyo_sort[-1])
+  node_min_daisha.append(keisan_daisha_sort[0])
+  node_max_daisha.append(keisan_daisha_sort[-1])
+
+
+  for j in range(b):
+    if road_info[i][0] in inter_info[j][2] :
+      if "SE" in inter_info[j][2]:
+        cost0[i].append([road_info[i][0],inter_info[j][0],])
+
+print("車両元："+str(keisan_sharyo))
+print("始点に近いノード："+str(node_min_sharyo))
+print("終点に近いノード："+str(node_max_sharyo))
+print("================")
+print("台車元："+str(keisan_daisha))
+print("始点に近いノード："+str(node_min_daisha))
+print("終点に近いノード："+str(node_max_daisha))
+#print(cost0)
+
+print("")
+
+
+
 
 
 #nodeとedgeの数を求める
@@ -36,14 +86,14 @@ node_sharyo=len(collections.Counter(inter))+len(collections.Counter(park_replace
 edge_sharyo = 0#車両の場合のエッジ数(有効グラフを含む)
 for i in range(a):
   #print(road_info[i][2])
-  #print(keisan0[i])
+  #print(keisan_sharyo[i])
   if int(road_info[i][2]) == 0:
-     edge_sharyo += int(((len(keisan0[i])/2)+1) * 2)
-     #print(((len(keisan0[i])/2)+1) * 2)
+     edge_sharyo += int(((len(keisan_sharyo[i])/2)+1) * 2)
+     #print(((len(keisan_sharyo[i])/2)+1) * 2)
      #print(edge_sharyo)
   else:
-     edge_sharyo += len(keisan0[i]) + 1
-     #print(len(keisan0[i]) + 1)
+     edge_sharyo += len(keisan_sharyo[i]) + 1
+     #print(len(keisan_sharyo[i]) + 1)
      #print(edge_sharyo)
   #print("=====")
 #print(edge_sharyo)
@@ -58,4 +108,3 @@ print("edge："+str(edge_sharyo))
 print("=====nodeとedgeの数(台車の場合)====")
 print("node："+str(node_daisha))
 print("edge："+str(edge_daisha*2)+"，アルゴリズムに使うのは"+str(edge_daisha))
-
