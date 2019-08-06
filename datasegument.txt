@@ -70,7 +70,6 @@ print("================")
 #AB地点間の距離を求める(A B 距離コスト)
 cost0=[[] for i in range(a)]
 for i in range(a):
-  if  node_min_sharyo[i] == 0:
 
 #A(始点)求める
     A = 0
@@ -94,10 +93,12 @@ for i in range(a):
     #print([road_info[i][0],B])
 
 #cost計算
-    for j in range(1):
+    if node_min_sharyo[i] == 0:#道路iに駐車可能箇所が存在しない
+      for j in range(1):
         cost0[i].append([A,B,road_info[i][1]])
-  else:
-     cost0[i].append(["まだできてない"])
+    else:
+      #for j in range
+        cost0[i].append(["まだできてない"])
   #for j in range(b):
     #if road_info[i][0] in inter_info[j][2] :
       #print([road_info[i][0],inter_info[j][2]])
@@ -138,3 +139,4 @@ print("edge："+str(edge_sharyo))
 print("=====nodeとedgeの数(台車の場合)====")
 print("node："+str(node_daisha))
 print("edge："+str(edge_daisha*2)+"，アルゴリズムに使うのは"+str(edge_daisha))
+
