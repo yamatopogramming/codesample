@@ -1,5 +1,6 @@
 import math
 import collections
+import itertools
 a,b,c,d,e = map(int,input().split(' '))#ヘッダ(a:道路情報の行数、b:交差点情報の行数、c:駐車可能箇所情報の行数、d:配達先情報の行数、e:クエリの行数)
 road_info=[input().split(' ') for i in range(a)]#道路情報
 inter_info=[input().split(' ') for i in range(b)]#交差点情報
@@ -16,26 +17,15 @@ for i in range(c):
   park.append(park_info[i][0])
 park_replace = [s.replace('ES', 'SE') for s in park]#c(park_info)のESをSEに変更
 
-road=[]#道路の空集合
-for i in range(a):
-  road.append(road_info[i][0])
 keisan=[[] for i in range(a)]
-for i in range(len(road)):
+for i in range(a):
   for j in range(c):
-    if park_info[j][1]==road[i]:
+    if park_info[j][1]==road_info[i][0]:
       keisan[i].append([park_info[j][0],park_info[j][2]])
   for m in range(d):
-    if ship_info[m][1]==road[i]:
+    if ship_info[m][1]==road_info[i][0]:
       keisan[i].append([ship_info[m][0],ship_info[m][2]])
                         
 node=len(collections.Counter(inter))+len(collections.Counter(park_replace))+d#交通ネットワークのノード数
 edge=node + a#交通ネットワークのエッジ数
-#print(road_info)
-#print(inter_info)
-#print(park_info)
-#print(ship_info)
-#print(query)
-#print(node)
-#print(edge)
-#print(inter)
-print(keisan)
+
