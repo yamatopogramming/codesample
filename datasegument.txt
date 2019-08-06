@@ -10,15 +10,14 @@ query=[input().split(' ') for i in range(e)]#クエリ
 inter=[]#交差点の空集合
 for i in range(b):
   inter.append(inter_info[i][0])
+inter=list(set(inter))#set()で重複した要素を削除
   
 park=[]#駐車場の空集合
 for i in range(c):
   park.append(park_info[i][0])
 park_replace = [s.replace('ES', 'SE') for s in park]#c(park_info)のESをSEに変更
+park_replace = list(set(park_replace))#set()で重複した要素を削除
 
-road=[]#道路の空集合
-for i in range(a):
-  road.append(road_info[i][0])
 keisan0=[[] for i in range(a)]
 keisan1=[[] for i in range(a)]
 for i in range(len(road)):
@@ -51,6 +50,4 @@ edge_daisha=len(collections.Counter(park_replace))+d+a#台車の時のエッジ�
 print("nodeの数は"+str(node))
 print("無向グラフとしてみたときのedgeの数は"+str(edge_daisha))
 
-print(road_info)
-print(road)
-print(keisan)
+
