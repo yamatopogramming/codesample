@@ -96,14 +96,14 @@ for i in range(a):
     if node_min_sharyo[i] == 0:#道路iに駐車可能箇所が存在しない
       for j in range(1):
         cost0[i].append([A,B,road_info[i][1]])
-    else:
-      for j in range(len(keisan_sharyo_sort[i])):
-        if keisan_sharyo_sort[i][j][0]==node_min_sharyo[i]:
-          cost0[i].append([A,keisan_sharyo_sort[i][j][0],keisan_sharyo_sort[i][j][1]])
-        if keisan_sharyo_sort[i][j][0]==node_max_sharyo[i]:
-          cost0[i].append(keisan_sharyo_sort[i][j][0],B,abs(int(road_info[i][1])-int(keisan_sharyo_sort[i][j][1])))
-        else:
-          cost0[i].append(keisan_sharyo_sort[i][j][0],keisan_sharyo_sort[i][j+1][0],abs(int(keisan_sharyo_sort[i][j][1])-int(keisan_sharyo_sort[i][j+1][1])))
+   else:#道路iに駐車可能箇所が存在
+      for j in range(len(keisan_sharyo[i])):
+        if keisan_sharyo[i][j][0]==node_min_sharyo[i][0]:#ノードjが最も始点に近い時
+          cost0[i].append([A,keisan_sharyo[i][j][0],keisan_sharyo[i][j][1]])
+        if keisan_sharyo[i][j][0]==node_max_sharyo[i][0]:#ノードjが最も終点に近い時
+          cost0[i].append([keisan_sharyo[i][j][0],B,abs(int(road_info[i][1])-int(keisan_sharyo[i][j][1]))])
+        else:#その他
+          cost0[i].append([keisan_sharyo[i][j][0],keisan_sharyo[i][j+1][0],abs(int(keisan_sharyo[i][j][1])-int(keisan_sharyo[i][j+1][1]))])
           #for j in range(b):
     #if road_info[i][0] in inter_info[j][2] :
       #print([road_info[i][0],inter_info[j][2]])
