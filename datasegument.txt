@@ -29,25 +29,33 @@ for i in range(len(road)):
     if ship_info[m][1]==road[i]:
       keisan1[i].append([ship_info[m][0],ship_info[m][2]])
 
-count = 0
+
+#nodeとedgeの数を求める
+#車両の場合
+node_sharyo=len(collections.Counter(inter))+len(collections.Counter(park_replace))#車両の場合のノード数
+edge_sharyo = 0#車両の場合のエッジ数(有効グラフを含む)
 for i in range(a):
-  print(road_info[i][2])
-  print(keisan[i])
+  #print(road_info[i][2])
+  #print(keisan0[i])
   if int(road_info[i][2]) == 0:
-     count += (len(keisan[i]) + 1) * 2
-     print((len(keisan[i]) + 1) * 2)
-     print(count)
+     edge_sharyo += int(((len(keisan0[i])/2)+1) * 2)
+     #print(((len(keisan0[i])/2)+1) * 2)
+     #print(edge_sharyo)
   else:
-     count += len(keisan[i]) + 1
-     print(len(keisan[i]) + 1)
-     print(count)
-  print("=====")
+     edge_sharyo += len(keisan0[i]) + 1
+     #print(len(keisan0[i]) + 1)
+     #print(edge_sharyo)
+  #print("=====")
+#print(edge_sharyo)
 
-print(count)
+#台車の場合
+node_daisha=len(collections.Counter(inter))+len(collections.Counter(park_replace))+d#台車の場合のノード数
+edge_daisha=len(collections.Counter(park_replace))+d+a#台車の場合のエッジ数
 
-node=len(collections.Counter(inter))+len(collections.Counter(park_replace))+d#交通ネットワークのノード数
-edge_daisha=len(collections.Counter(park_replace))+d+a#台車の時のエッジ数
-print("nodeの数は"+str(node))
-print("無向グラフとしてみたときのedgeの数は"+str(edge_daisha))
-
+print("=====nodeとedgeの数(車両の場合)====")
+print("node："+str(node_sharyo))
+print("edge："+str(edge_sharyo))
+print("=====nodeとedgeの数(台車の場合)====")
+print("node："+str(node_daisha))
+print("edge："+str(edge_daisha*2)+"，アルゴリズムに使うのは"+str(edge_daisha))
 
