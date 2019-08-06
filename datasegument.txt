@@ -71,7 +71,31 @@ print("================")
 cost0=[[] for i in range(a)]
 for i in range(a):
   if  node_min_sharyo[i] == 0:
-     cost0[i].append(["A","B",road_info[i][1]])
+
+#A(始点)求める
+    A = 0
+    for j in range(b):
+      if road_info[i][0] in inter_info[j][2]:
+        if "SE" in inter_info[j][2]:
+          A = inter_info[j][0]
+      if road_info[i][0] in inter_info[j][1]:
+        if "ES" in inter_info[j][1]:
+          A = inter_info[j][0]
+    #print([road_info[i][0],A])
+#B(終点)求める
+    B = 0
+    for j in range(b):
+      if road_info[i][0] in inter_info[j][2]:
+        if "ES" in inter_info[j][2]:
+          B = inter_info[j][0]
+      if road_info[i][0] in inter_info[j][1]:
+        if "SE" in inter_info[j][1]:
+          B = inter_info[j][0]
+    #print([road_info[i][0],B])
+
+#cost計算
+    for j in range(1):
+        cost0[i].append([A,B,road_info[i][1]])
   else:
      cost0[i].append(["まだできてない"])
   #for j in range(b):
@@ -80,9 +104,9 @@ for i in range(a):
       #if "SE" in inter_info[j][2]:
         #cost0[i].append([road_info[i][0],inter_info[j][0],])
 
-
+print("[始点,終点,エッジの長さ]")
 print(cost0)
-
+print("=========")
 print("")
 
 
