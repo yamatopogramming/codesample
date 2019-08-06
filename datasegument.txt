@@ -28,9 +28,28 @@ for i in range(len(road)):
   for m in range(d):
     if ship_info[m][1]==road[i]:
       keisan[i].append([ship_info[m][0],ship_info[m][2]])
-                        
+
+count = 0
+for i in range(a):
+  print(road_info[i][2])
+  print(keisan[i])
+  if int(road_info[i][2]) == 0:
+     count += (len(keisan[i]) + 1) * 2
+     print((len(keisan[i]) + 1) * 2)
+     print(count)
+  else:
+     count += len(keisan[i]) + 1
+     print(len(keisan[i]) + 1)
+     print(count)
+  print("=====")
+
+print(count)
 
 node=len(collections.Counter(inter))+len(collections.Counter(park_replace))+d#交通ネットワークのノード数
 edge_daisha=len(collections.Counter(park_replace))+d+a#台車の時のエッジ数
 print("nodeの数は"+str(node))
 print("無向グラフとしてみたときのedgeの数は"+str(edge_daisha))
+
+print(road_info)
+print(road)
+print(keisan)
