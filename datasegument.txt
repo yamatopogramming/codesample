@@ -20,8 +20,10 @@ park_replace = list(set(park_replace))#set()で重複した要素を削除
 
 
 
-
 #各道路に含まれるノードとそのSからの距離
+def get_unique_list(seq):
+    seen = []
+    return [x for x in seq if x not in seen and not seen.append(x)]
 keisan_sharyo=[[] for i in range(a)]
 keisan_daisha=[[] for i in range(a)]
 for i in range(a):
@@ -36,9 +38,9 @@ for i in range(a):
 from operator import itemgetter
 for i in range(a):
   keisan_sharyo[i].sort(key=itemgetter(1))
+  keisan_sharyo[i] = get_unique_list(keisan_sharyo[i])
   keisan_daisha[i].sort(key=itemgetter(1))
-  #keisan_daisha[i]=keisan_daisha_kai
-  #keisan_daisha[i]=keisan_daisha[i].sort(key=itemgetter(1))
+  keisan_daisha[i] = get_unique_list(keisan_daisha[i])
 #print(keisan_daisha[1])
 #print("=====")
 #print("車両："+str(keisan_sharyo))
@@ -165,13 +167,22 @@ print(cost1)
 
 #nodeとedgeの数を求める
 #車両の場合
-node_sharyo=len(collections.Counter(inter))+len(collections.Counter(park_replace))#車両の場合のノード数
-edge_sharyo = 0#車両の場合のエッジ数(有効グラフを含む)
+node_sharyo=len(collections.Counter(inter))+len(collections.Counter(park_replace))+d
+edge_sharyo = 0
 for i in range(a):
   if int(road_info[i][2]) == 0:
-     edge_sharyo += int(((len(keisan_sharyo[i])/2)+1) * 2)
+     edge_sharyo +=(len(keisan_daisha[i])+1)*2
   else:
-     edge_sharyo += len(keisan_sharyo[i]) + 1
+     edge_sharyo +=(len(keisan_daisha[i])+1)
+#print("=====nodeとedgeの数(車両の場合)====")
+#print("node："+str(node_sharyo))
+#print("edge："+str(edge_sharyo))
+#台車の場合
+node_daisha=len(collections.Counter(inter))+len(collections.Counter(park_replace))+d
+edge_daisha=(len(collections.Counter(park_replace))+d+a)*2#台車の場合のエッジ数
+#print("=====nodeとedgeの数(台車の場合)====")
+#print("node："+str(node_daisha))
+#print("edge："+str(edge_daisha))
 
 
 #台車の場合
