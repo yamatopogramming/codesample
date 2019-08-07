@@ -26,6 +26,7 @@ keisan_sharyo=[[] for i in range(a)]
 keisan_daisha=[[] for i in range(a)]
 for i in range(a):
   for j in range(c):
+    park_info[j][0]=park_info[j][0].replace('ES','SE')
     if park_info[j][1]==road_info[i][0]:
       keisan_sharyo[i].append([park_info[j][0],park_info[j][2]])
       keisan_daisha[i].append([park_info[j][0],park_info[j][2]])
@@ -33,10 +34,12 @@ for i in range(a):
     if ship_info[m][1]==road_info[i][0]:
       keisan_daisha[i].append([ship_info[m][0],ship_info[m][2]])
 from operator import itemgetter
-#for i in range(a):
-  #keisan_sharyo[i]=keisan_sharyo[i].sort(key=itemgetter(1))
+for i in range(a):
+  keisan_sharyo[i].sort(key=itemgetter(1))
+  keisan_daisha[i].sort(key=itemgetter(1))
+  #keisan_daisha[i]=keisan_daisha_kai
   #keisan_daisha[i]=keisan_daisha[i].sort(key=itemgetter(1))
-print(keisan_daisha)
+#print(keisan_daisha[1])
 #print("=====")
 #print("車両："+str(keisan_sharyo))
 #print("=====")
@@ -67,7 +70,7 @@ for i in range(a):
 #print("始点に近いノード："+str(node_min_daisha))
 #print("終点に近いノード："+str(node_max_daisha))
 
-print(keisan_sharyo_sort)
+#print(keisan_sharyo_sort)
 #AB地点間の距離を求める(A B 距離コスト)
 cost0=[[] for i in range(a)]#車両のエッジのコスト
 cost1=[[] for i in range(a)]#台車のエッジのコスト
@@ -120,7 +123,7 @@ for i in range(a):
           cost1[i].append([keisan_daisha[i][j][0],B,abs(int(road_info[i][1])-int(keisan_daisha[i][j][1]))])
         else:#その他
           cost1[i].append([keisan_daisha[i][j-1][0],keisan_daisha[i][j][0],abs(int(keisan_daisha[i][j-1][1])-int(keisan_daisha[i][j][1]))])
-   
+#print(keisan_daisha)
 #print("車両:[始点,終点,エッジの長さ]")
 #print(cost0)
 #print("=========")
@@ -137,29 +140,22 @@ for i in range(a):
 node_sharyo=len(collections.Counter(inter))+len(collections.Counter(park_replace))#車両の場合のノード数
 edge_sharyo = 0#車両の場合のエッジ数(有効グラフを含む)
 for i in range(a):
-  #print(road_info[i][2])
-  #print(keisan_sharyo[i])
   if int(road_info[i][2]) == 0:
      edge_sharyo += int(((len(keisan_sharyo[i])/2)+1) * 2)
-     #print(((len(keisan_sharyo[i])/2)+1) * 2)
-     #print(edge_sharyo)
   else:
      edge_sharyo += len(keisan_sharyo[i]) + 1
-     #print(len(keisan_sharyo[i]) + 1)
-     #print(edge_sharyo)
-  #print("=====")
-#print(edge_sharyo)
+
 
 #台車の場合
 node_daisha=len(collections.Counter(inter))+len(collections.Counter(park_replace))+d#台車の場合のノード数
-edge_daisha=len(collections.Counter(park_replace))+d+a#台車の場合のエッジ数
+edge_daisha=(len(collections.Counter(park_replace))+d+a)*2#台車の場合のエッジ数
 
 #print("=====nodeとedgeの数(車両の場合)====")
 #print("node："+str(node_sharyo))
 #print("edge："+str(edge_sharyo))
 #print("=====nodeとedgeの数(台車の場合)====")
 #print("node："+str(node_daisha))
-#print("edge："+str(edge_daisha*2)+"，アルゴリズムに使うのは"+str(edge_daisha))
+#print("edge："+str(edge_daisha))
 
 def dijkstra(s,n,w,cost):
     #始点sから各頂点への最短距離
@@ -183,7 +179,11 @@ def dijkstra(s,n,w,cost):
         for j in range(n):
                d[j] = min(d[j],d[v]+cost[v][j])
     return d
-
+  
+unchi=0
+for i in range(a):
+  unchi+=len(cost1[i])
+print(cost1)
 ################################
  #n:頂点数　w:辺の数
 node=[]
@@ -207,23 +207,29 @@ for i in range(len(node)):
         cost1[j][k][0]=node[i][1]
       if node[i][0]==cost1[j][k][1]:
         cost1[j][k][1]=node[i][1]
-  
+#print(node)  
 for i in range(len(cost1)):
   for j in range(len(cost1[i])):
     x,y,z = int(cost1[i][j][0]),int(cost1[i][j][1]),int(cost1[i][j][2])
     cost[x][y] = z
     #cost[y][x] = z
+    
 #print(cost1)
 
+print(edge_daisha)
+
 #print(dijkstra(2,node_daisha,edge_daisha,cost))
+
 for i in range(e):
+  query[i][1]=query[i][1].replace('ES','SE')
+  query[i][2]=query[i][2].replace('ES','SE')
   for j in range(len(node)):
     if query[i][1]==node[j][0]:
       s=node[j][1]
     if query[i][2]==node[j][0]:
       d=node[j][1]
   result=dijkstra(s,node_daisha,edge_daisha,cost)
-  print(result[d])
+  #print(result[d])
 
 
 
