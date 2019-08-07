@@ -11,7 +11,7 @@ inter=[]#交差点の空集合
 for i in range(b):
   inter.append(inter_info[i][0])
 inter=list(set(inter))#set()で重複した要素を削除
-  
+#print(inter)
 park=[]#駐車場の空集合
 for i in range(c):
   park.append(park_info[i][0])
@@ -32,14 +32,15 @@ for i in range(a):
   for m in range(d):
     if ship_info[m][1]==road_info[i][0]:
       keisan_daisha[i].append([ship_info[m][0],ship_info[m][2]])
+from operator import itemgetter
+#for i in range(a):
+  #keisan_sharyo[i]=keisan_sharyo[i].sort(key=itemgetter(1))
+  #keisan_daisha[i]=keisan_daisha[i].sort(key=itemgetter(1))
+print(keisan_daisha)
 #print("=====")
 #print("車両："+str(keisan_sharyo))
 #print("=====")
 #print("台車："+str(keisan_daisha))
-
-
-
-
 
 #各道路の始点に一番近い&遠いノードとSからの距離を出す
 node_min_sharyo = []
@@ -58,17 +59,18 @@ for i in range(a):
   node_min_daisha.append(keisan_daisha_sort[0])
   node_max_daisha.append(keisan_daisha_sort[-1])
 
-print("車両元："+str(keisan_sharyo))
-print("始点に近いノード："+str(node_min_sharyo))
-print("終点に近いノード："+str(node_max_sharyo))
-print("================")
+#print("車両元："+str(keisan_sharyo))
+#print("始点に近いノード："+str(node_min_sharyo))
+#print("終点に近いノード："+str(node_max_sharyo))
+#print("================")
 #print("台車元："+str(keisan_daisha))
 #print("始点に近いノード："+str(node_min_daisha))
 #print("終点に近いノード："+str(node_max_daisha))
 
-
+print(keisan_sharyo_sort)
 #AB地点間の距離を求める(A B 距離コスト)
-cost0=[[] for i in range(a)]
+cost0=[[] for i in range(a)]#車両のエッジのコスト
+cost1=[[] for i in range(a)]#台車のエッジのコスト
 for i in range(a):
 
 #A(始点)求める
@@ -92,11 +94,11 @@ for i in range(a):
           B = inter_info[j][0]
     #print([road_info[i][0],B])
 
-#cost計算:車両
+#cost計算
     if node_min_sharyo[i] == 0:#道路iに駐車可能箇所が存在しない
       for j in range(1):
         cost0[i].append([A,B,road_info[i][1]])
-   else:#道路iに駐車可能箇所が存在
+    else:#道路iに駐車可能箇所が存在
       for j in range(len(keisan_sharyo[i])):
         if keisan_sharyo[i][j][0]==node_min_sharyo[i][0]:#ノードjが最も始点に近い時
           cost0[i].append([A,keisan_sharyo[i][j][0],keisan_sharyo[i][j][1]])
@@ -105,18 +107,11 @@ for i in range(a):
           cost0[i].append([keisan_sharyo[i][j][0],B,abs(int(road_info[i][1])-int(keisan_sharyo[i][j][1]))])
         else:#その他
           cost0[i].append([keisan_sharyo[i][j-1][0],keisan_sharyo[i][j][0],abs(int(keisan_sharyo[i][j-1][1])-int(keisan_sharyo[i][j][1]))])
-          #for j in range(b):
-    #if road_info[i][0] in inter_info[j][2] :
-      #print([road_info[i][0],inter_info[j][2]])
-      #if "SE" in inter_info[j][2]:
-        #cost0[i].append([road_info[i][0],inter_info[j][0],])
-        
-        
-#cost計算:台車
-if node_min_daisha[i] == 0:#道路iに駐車可能箇所が存在しない
+          
+    if node_min_daisha[i] == 0:#道路iに駐車可能箇所が存在しない
       for j in range(1):
         cost1[i].append([A,B,road_info[i][1]])
-else:#道路iに駐車可能箇所が存在
+    else:#道路iに駐車可能箇所が存在
       for j in range(len(keisan_daisha[i])):
         if keisan_daisha[i][j][0]==node_min_daisha[i][0]:#ノードjが最も始点に近い時
           cost1[i].append([A,keisan_daisha[i][j][0],keisan_daisha[i][j][1]])
@@ -125,17 +120,16 @@ else:#道路iに駐車可能箇所が存在
           cost1[i].append([keisan_daisha[i][j][0],B,abs(int(road_info[i][1])-int(keisan_daisha[i][j][1]))])
         else:#その他
           cost1[i].append([keisan_daisha[i][j-1][0],keisan_daisha[i][j][0],abs(int(keisan_daisha[i][j-1][1])-int(keisan_daisha[i][j][1]))])
-    #for j in range(b):
-    
-print("車両:[始点,終点,エッジの長さ]")
-print(cost0)
-print("=========")
-print("")
+   
+#print("車両:[始点,終点,エッジの長さ]")
+#print(cost0)
+#print("=========")
+#print("")
 
-print("台車:[始点,終点,エッジの長さ]")
-print(cost1)
-print("=========")
-print("")
+#print("台車:[始点,終点,エッジの長さ]")
+#print(cost1)
+#print("=========")
+#print("")
 
 
 #nodeとedgeの数を求める
@@ -160,11 +154,77 @@ for i in range(a):
 node_daisha=len(collections.Counter(inter))+len(collections.Counter(park_replace))+d#台車の場合のノード数
 edge_daisha=len(collections.Counter(park_replace))+d+a#台車の場合のエッジ数
 
-print("=====nodeとedgeの数(車両の場合)====")
-print("node："+str(node_sharyo))
-print("edge："+str(edge_sharyo))
-print("=====nodeとedgeの数(台車の場合)====")
-print("node："+str(node_daisha))
-print("edge："+str(edge_daisha*2)+"，アルゴリズムに使うのは"+str(edge_daisha))
+#print("=====nodeとedgeの数(車両の場合)====")
+#print("node："+str(node_sharyo))
+#print("edge："+str(edge_sharyo))
+#print("=====nodeとedgeの数(台車の場合)====")
+#print("node："+str(node_daisha))
+#print("edge："+str(edge_daisha*2)+"，アルゴリズムに使うのは"+str(edge_daisha))
+
+def dijkstra(s,n,w,cost):
+    #始点sから各頂点への最短距離
+    #n:頂点数,　w:辺の数, cost[u][v] : 辺uvのコスト(存在しないときはinf)
+    d = [float("inf")] * n
+    used = [False] * n
+    d[s] = 0
+    
+    while True:
+        v = -1
+        #まだ使われてない頂点の中から最小の距離のものを探す
+        for i in range(n):
+            if (not used[i]) and (v == -1):
+               v = i
+            elif (not used[i]) and d[i] < d[v]:
+                v = i
+        if v == -1:
+               break
+        used[v] = True
+               
+        for j in range(n):
+               d[j] = min(d[j],d[v]+cost[v][j])
+    return d
+
+################################
+ #n:頂点数　w:辺の数
+node=[]
+for i in range(len(inter)):
+  node.append([inter[i]])
+for i in range(len(park_replace)):
+  node.append([park_replace[i]])
+for i in range(len(ship_info)):
+  node.append([ship_info[i][0]])
+for i in range(len(node)):
+  node[i].append(i)
+#print(node)
+cost = [[float("inf") for i in range(node_daisha)] for i in range(node_daisha)]
+#cost = [[float("inf") for i in range(node_daisha)] for i in range(node_daisha)] 
+#cost[u][v] : 辺uvのコスト(存在しないときはinf この場合は10**10)
+
+for i in range(len(node)):
+  for j in range(len(cost1)):
+    for k in range(len(cost1[j])):
+      if node[i][0]==cost1[j][k][0]:
+        cost1[j][k][0]=node[i][1]
+      if node[i][0]==cost1[j][k][1]:
+        cost1[j][k][1]=node[i][1]
+  
+for i in range(len(cost1)):
+  for j in range(len(cost1[i])):
+    x,y,z = int(cost1[i][j][0]),int(cost1[i][j][1]),int(cost1[i][j][2])
+    cost[x][y] = z
+    #cost[y][x] = z
+#print(cost1)
+
+#print(dijkstra(2,node_daisha,edge_daisha,cost))
+for i in range(e):
+  for j in range(len(node)):
+    if query[i][1]==node[j][0]:
+      s=node[j][1]
+    if query[i][2]==node[j][0]:
+      d=node[j][1]
+  result=dijkstra(s,node_daisha,edge_daisha,cost)
+  print(result[d])
+
+
 
 
