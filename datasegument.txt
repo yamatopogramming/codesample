@@ -92,7 +92,7 @@ for i in range(a):
           B = inter_info[j][0]
     #print([road_info[i][0],B])
 
-#cost計算
+#cost計算:車両
     if node_min_sharyo[i] == 0:#道路iに駐車可能箇所が存在しない
       for j in range(1):
         cost0[i].append([A,B,road_info[i][1]])
@@ -109,9 +109,30 @@ for i in range(a):
       #print([road_info[i][0],inter_info[j][2]])
       #if "SE" in inter_info[j][2]:
         #cost0[i].append([road_info[i][0],inter_info[j][0],])
-
-print("[始点,終点,エッジの長さ]")
+        
+        
+#cost計算:台車
+if node_min_daisha[i] == 0:#道路iに駐車可能箇所が存在しない
+      for j in range(1):
+        cost1[i].append([A,B,road_info[i][1]])
+else:#道路iに駐車可能箇所が存在
+      for j in range(len(keisan_daisha[i])):
+        if keisan_daisha[i][j][0]==node_min_daisha[i][0]:#ノードjが最も始点に近い時
+          cost1[i].append([A,keisan_daisha[i][j][0],keisan_daisha[i][j][1]])
+        if keisan_daisha[i][j][0]==node_max_daisha[i][0]:#ノードjが最も終点に近い時
+          cost1[i].append([keisan_daisha[i][j-1][0],keisan_daisha[i][j][0],abs(int(keisan_daisha[i][j-1][1])-int(keisan_daisha[i][j][1]))])
+          cost1[i].append([keisan_daisha[i][j][0],B,abs(int(road_info[i][1])-int(keisan_daisha[i][j][1]))])
+        else:#その他
+          cost1[i].append([keisan_daisha[i][j-1][0],keisan_daisha[i][j][0],abs(int(keisan_daisha[i][j-1][1])-int(keisan_daisha[i][j][1]))])
+    #for j in range(b):
+    
+print("車両:[始点,終点,エッジの長さ]")
 print(cost0)
+print("=========")
+print("")
+
+print("台車:[始点,終点,エッジの長さ]")
+print(cost1)
 print("=========")
 print("")
 
