@@ -1,6 +1,6 @@
 k,l=map(int,input().split())#ヘッダ(k:駐車可能箇所情報の行数、l:配達先情報の行の行数)
-park_info=[input().split(' ') for i in range(k)]#駐車可能箇所情報
-dest_info=[input().split(' ') for i in range(l)]#配達先情報
+park_info=[input().split() for i in range(k)]#駐車可能箇所情報
+dest_info=[input().split() for i in range(l)]#配達先情報
 sharyo=[[] for i in range(k)]#車両距離行列
 for i in range(k):
   sharyo[i]=list(map(int,input().split()))
@@ -11,4 +11,69 @@ park_dest=[[] for i in range(l)]#配達先と駐車箇所の距離行列
 for i in range(l):
   for j in range(k):
     park_dest[i]=daisha[i][:k]
-print(park_dest)
+speed_sharyo=250#m/分
+speed_daisha=100#m/分
+limit=240#分
+
+park=[]#車両の移動の最短経路を考える用
+for i in range(k):
+  park.append(park_info[i][0])
+
+dest=[]
+for i in range(l):
+  dest.append(dest_info[i][0])
+  
+#駐車可能箇所に対し配達先を割り当てる
+group=[[] for i in range(k)]
+for i in range(l):
+  for j in range(k):
+    if park_dest[i][j]==min(park_dest[i]):
+      group[j].append([dest[i],i,park_dest[i][j]])
+#print(group)
+
+#グループごとの配送先の回り方及び
+#def greed(group,info,matrix,speed):
+time=[0 for i in range(k)]#各グループを回る時間を記録
+root=[[] for i in range(k)]#ルートを記録
+v=0#現在のノード
+for i in range(k):
+  #time[i] = time[i] + float(park_info[i][1])
+  root[i].append(park[i])
+  for j in range(len(group[i])):
+    length=[]
+    length.append(group[i][j][2])
+    if daisha[group[i][j][1]][i]==min(length):
+      time[i] = time[i] + daisha[group[i][j][1]][i] / speed_daisha
+      time[i] = time[i] + float(dest_info[j][1])
+      root[i].append(group[i][j][0])
+      v=group[i][j][1]
+  for m in range(len(group[i])):
+    time[i] = time[i] + (daisha[v][m] / speed_daisha) + float(dest_info[m][1]) 
+    v=m
+  #time[i] = time[i] + float(park_info[i][1])
+#print(root)
+#print(time)
+      
+#greed(group,park_info,daisha,speed_daisha)
+
+#駐車場間の移動
+time2=0
+root_park=[]
+vd=0
+for i in range(k):
+  num=[]
+  num.append(len(group[i]))
+  if len(group[i])==max(num):
+    vd=i
+    root_park.append(park[i])
+    time2 = time2 + float(park_info[i][1])
+for j in range(k):
+  time2 = time2 + (sharyo[vd][j] / speed_sharyo) + float(park_info[j][2])
+  time2 = time2 + float(park_info[j][1])
+  root_park.append(park[j])
+  if j == k:
+    time2 = time2 - float(park_info[j][1]) 
+print('グループごとのルート:'+str(root))
+print('グループごとの時間:'+str(time))
+print('駐車箇所間の移動時間:'+str(time2))
+print('駐車箇所のルート:'+str(root_park))
