@@ -1,0 +1,14 @@
+k,l=map(int,input().split())#ヘッダ(k:駐車可能箇所情報の行数、l:配達先情報の行の行数)
+park_info=[input().split(' ') for i in range(k)]#駐車可能箇所情報
+dest_info=[input().split(' ') for i in range(l)]#配達先情報
+sharyo=[[] for i in range(k)]#車両距離行列
+for i in range(k):
+  sharyo[i]=list(map(int,input().split()))
+daisha=[[] for i in range(l)]#台車距離行列
+for i in range(l):
+  daisha[i]=list(map(int,input().split()))
+park_dest=[[] for i in range(l)]#配達先と駐車箇所の距離行列
+for i in range(l):
+  for j in range(k):
+    park_dest[i]=daisha[i][:k]
+print(park_dest)
