@@ -7,17 +7,17 @@ park_info=[input().split(' ') for i in range(c)]#駐車可能箇所情報
 ship_info=[input().split(' ') for i in range(d)]#配達先情報
 query=[input().split(' ') for i in range(e)]#クエリ
 
+
 inter=[]#交差点の空集合
 for i in range(b):
   inter.append(inter_info[i][0])
 inter=list(set(inter))#set()で重複した要素を削除
-#print(inter)
+
 park=[]#駐車場の空集合
 for i in range(c):
   park.append(park_info[i][0])
 park_replace = [s.replace('ES', 'SE') for s in park]#c(park_info)のESをSEに変更
 park_replace = list(set(park_replace))#set()で重複した要素を削除
-
 
 
 #各道路に含まれるノードとそのSからの距離
@@ -35,51 +35,40 @@ for i in range(a):
   for m in range(d):
     if ship_info[m][1]==road_info[i][0]:
       keisan_daisha[i].append([ship_info[m][0],ship_info[m][2]])
+#intに直す
+for i in range(a):
+  for j in range(len(keisan_daisha[i])):
+    keisan_daisha[i][j][1] = int(keisan_daisha[i][j][1])
+for i in range(a):
+  for j in range(len(keisan_sharyo[i])):
+    keisan_sharyo[i][j][1] = int(keisan_sharyo[i][j][1])
 from operator import itemgetter
+#SE,ESをSEに統一
 for i in range(a):
   keisan_sharyo[i].sort(key=itemgetter(1))
   keisan_sharyo[i] = get_unique_list(keisan_sharyo[i])
   keisan_daisha[i].sort(key=itemgetter(1))
   keisan_daisha[i] = get_unique_list(keisan_daisha[i])
-#print(keisan_daisha[1])
-#print("=====")
-#print("車両："+str(keisan_sharyo))
-#print("=====")
-#print("台車："+str(keisan_daisha))
 
+  
 #各道路の始点に一番近い&遠いノードとSからの距離を出す
-node_min_sharyo = []
-node_max_sharyo = []
-node_min_daisha = []
-node_max_daisha = []
+node_min_daisha = []#台車の始点に近いノード
+node_max_daisha = []#台車の終点に近いノード
 for i in range(a):
-  keisan_sharyo_sort = sorted(keisan_sharyo[i], key=lambda x: x[1])
-  if not keisan_sharyo_sort:#道路上にノードがないとき
-    keisan_sharyo_sort.append(0)#0を入れる．
-  keisan_daisha_sort = sorted(keisan_daisha[i], key=lambda x: x[1])
-  if not keisan_daisha_sort:#道路上にノードがないとき
-    keisan_daisha_sort.append(0)#0を入れる．
-  node_min_sharyo.append(keisan_sharyo_sort[0])
-  node_max_sharyo.append(keisan_sharyo_sort[-1])
-  node_min_daisha.append(keisan_daisha_sort[0])
-  node_max_daisha.append(keisan_daisha_sort[-1])
+  if not keisan_daisha[i]:#道路上にノードがないとき
+    keisan_daisha[i].append(0)#0を入れる．
+  node_min_daisha.append(keisan_daisha[i][0])
+  node_max_daisha.append(keisan_daisha[i][-1])
+#print(node_min_daisha)
+#print(node_max_daisha)
+ 
 
-#print("車両元："+str(keisan_sharyo))
-#print("始点に近いノード："+str(node_min_sharyo))
-#print("終点に近いノード："+str(node_max_sharyo))
-#print("================")
-#print("台車元："+str(keisan_daisha))
-#print("始点に近いノード："+str(node_min_daisha))
-#print("終点に近いノード："+str(node_max_daisha))
-
-#print(keisan_sharyo_sort)
 #AB地点間の距離を求める(A B 距離コスト)
 cost0=[[] for i in range(a)]#車両のエッジのコスト
 cost1=[[] for i in range(a)]#台車のエッジのコスト
 for i in range(a):
-
 #A(始点)求める
-    A = 0
+    A = 0#A(交差点，始点)
     for j in range(b):
       if road_info[i][0] in inter_info[j][2]:
         if "SE" in inter_info[j][2]:
@@ -87,7 +76,6 @@ for i in range(a):
       if road_info[i][0] in inter_info[j][1]:
         if "ES" in inter_info[j][1]:
           A = inter_info[j][0]
-    #print([road_info[i][0],A])
 #B(終点)求める
     B = 0
     for j in range(b):
@@ -97,9 +85,9 @@ for i in range(a):
       if road_info[i][0] in inter_info[j][1]:
         if "SE" in inter_info[j][1]:
           B = inter_info[j][0]
-    #print([road_info[i][0],B])
-
+     
 #cost計算
+#車両の時，cost0
     if node_min_daisha[i] == 0:#道路iに駐車可能箇所が存在しない
       for j in range(1):
         cost0[i].append([A,B,road_info[i][1]])
@@ -110,36 +98,48 @@ for i in range(a):
       for j in range(len(keisan_daisha[i])):
         if keisan_daisha[i][j][0]==node_min_daisha[i][0]:#ノードjが最も始点に近い時
           cost0[i].append([A,keisan_daisha[i][j][0],keisan_daisha[i][j][1]])
-          if road_info[i][2]==0:
+          if int(road_info[i][2])==0:
             cost0[i].append([keisan_daisha[i][j][0],A,keisan_daisha[i][j][1]])  
-        if keisan_daisha[i][j][0]==node_max_daisha[i][0]:#ノードjが最も終点に近い時
+            if len(keisan_daisha[i])==1:
+              cost0[i].append([keisan_daisha[i][j][0],B,abs(int(road_info[i][1])-int(keisan_daisha[i][j][1]))])
+              cost0[i].append([B,keisan_daisha[i][j][0],abs(int(road_info[i][1])-int(keisan_daisha[i][j][1]))])
+          elif len(keisan_daisha[i])==1:
+            cost0[i].append([keisan_daisha[i][j][0],B,abs(int(road_info[i][1])-int(keisan_daisha[i][j][1]))])             
+        elif keisan_daisha[i][j][0]==node_max_daisha[i][0]:#ノードjが最も終点に近い時
           cost0[i].append([keisan_daisha[i][j-1][0],keisan_daisha[i][j][0],abs(int(keisan_daisha[i][j-1][1])-int(keisan_daisha[i][j][1]))])
           cost0[i].append([keisan_daisha[i][j][0],B,abs(int(road_info[i][1])-int(keisan_daisha[i][j][1]))])
-          if road_info[i][2]==0:
+          if int(road_info[i][2])==0:
             cost0[i].append([keisan_daisha[i][j][0],keisan_daisha[i][j-1][0],abs(int(keisan_daisha[i][j-1][1])-int(keisan_daisha[i][j][1]))])
-            cost0[i].append(B,[keisan_daisha[i][j][0],abs(int(road_info[i][1])-int(keisan_daisha[i][j][1]))])
+            cost0[i].append([B,keisan_daisha[i][j][0],abs(int(road_info[i][1])-int(keisan_daisha[i][j][1]))])
         else:#その他
+          if j - (j-1) != 1:
+            break;
           if len(keisan_daisha[i])!=1:
             cost0[i].append([keisan_daisha[i][j-1][0],keisan_daisha[i][j][0],abs(int(keisan_daisha[i][j-1][1])-int(keisan_daisha[i][j][1]))])
-            if road_info[i][2]==0:
+            if int(road_info[i][2])==0:
               cost0[i].append([keisan_daisha[i][j][0],keisan_daisha[i][j-1][0],abs(int(keisan_daisha[i][j-1][1])-int(keisan_daisha[i][j][1]))])
             
+#台車の時，cost1            
     if node_min_daisha[i] == 0:#道路iに駐車可能箇所が存在しない
       for j in range(1):
         cost1[i].append([A,B,road_info[i][1]])
         cost1[i].append([B,A,road_info[i][1]])
-          
     else:#道路iに駐車可能箇所が存在
       for j in range(len(keisan_daisha[i])):
         if keisan_daisha[i][j][0]==node_min_daisha[i][0]:#ノードjが最も始点に近い時
           cost1[i].append([A,keisan_daisha[i][j][0],keisan_daisha[i][j][1]])
-          cost1[i].append([keisan_daisha[i][j][0],A,keisan_daisha[i][j][1]])  
-        if keisan_daisha[i][j][0]==node_max_daisha[i][0]:#ノードjが最も終点に近い時
+          cost1[i].append([keisan_daisha[i][j][0],A,keisan_daisha[i][j][1]])
+          if len(keisan_daisha[i])==1:
+            cost1[i].append([keisan_daisha[i][j][0],B,abs(int(road_info[i][1])-int(keisan_daisha[i][j][1]))])
+            cost1[i].append([B,keisan_daisha[i][j][0],abs(int(road_info[i][1])-int(keisan_daisha[i][j][1]))])
+        elif keisan_daisha[i][j][0]==node_max_daisha[i][0]:#ノードjが最も終点に近い時
           cost1[i].append([keisan_daisha[i][j-1][0],keisan_daisha[i][j][0],abs(int(keisan_daisha[i][j-1][1])-int(keisan_daisha[i][j][1]))])
           cost1[i].append([keisan_daisha[i][j][0],B,abs(int(road_info[i][1])-int(keisan_daisha[i][j][1]))])
           cost1[i].append([keisan_daisha[i][j][0],keisan_daisha[i][j-1][0],abs(int(keisan_daisha[i][j-1][1])-int(keisan_daisha[i][j][1]))])
           cost1[i].append([B,keisan_daisha[i][j][0],abs(int(road_info[i][1])-int(keisan_daisha[i][j][1]))])
         else:#その他
+          if j - (j-1) != 1:
+            break;
           if len(keisan_daisha[i])!=1:
             cost1[i].append([keisan_daisha[i][j-1][0],keisan_daisha[i][j][0],abs(int(keisan_daisha[i][j-1][1])-int(keisan_daisha[i][j][1]))])
             cost1[i].append([keisan_daisha[i][j][0],keisan_daisha[i][j-1][0],abs(int(keisan_daisha[i][j-1][1])-int(keisan_daisha[i][j][1]))])
@@ -153,16 +153,10 @@ for i in range(a):
   for j in range(len(cost1[i])):
     cost1[i]=[m for m in cost1[i] if cost1[i][j][2]  != 0]
 cost1= [x for x in cost1 if x]
-#print(cost1)
 #print("車両:[始点,終点,エッジの長さ]")
 #print(cost0)
-#print("=========")
-#print("")
-
 #print("台車:[始点,終点,エッジの長さ]")
 #print(cost1)
-#print("=========")
-#print("")
 
 
 #nodeとedgeの数を求める
@@ -174,28 +168,13 @@ for i in range(a):
      edge_sharyo +=(len(keisan_daisha[i])+1)*2
   else:
      edge_sharyo +=(len(keisan_daisha[i])+1)
-#print("=====nodeとedgeの数(車両の場合)====")
-#print("node："+str(node_sharyo))
-#print("edge："+str(edge_sharyo))
 #台車の場合
 node_daisha=len(collections.Counter(inter))+len(collections.Counter(park_replace))+d
 edge_daisha=(len(collections.Counter(park_replace))+d+a)*2#台車の場合のエッジ数
-#print("=====nodeとedgeの数(台車の場合)====")
-#print("node："+str(node_daisha))
-#print("edge："+str(edge_daisha))
 
 
-#台車の場合
-node_daisha=len(collections.Counter(inter))+len(collections.Counter(park_replace))+d#台車の場合のノード数
-edge_daisha=(len(collections.Counter(park_replace))+d+a)*2#台車の場合のエッジ数
 
-#print("=====nodeとedgeの数(車両の場合)====")
-#print("node："+str(node_sharyo))
-#print("edge："+str(edge_sharyo))
-#print("=====nodeとedgeの数(台車の場合)====")
-#print("node："+str(node_daisha))
-#print("edge："+str(edge_daisha))
-
+#最短経路の解法：ダイグストラ法の定義
 def dijkstra(s,n,w,cost):
     #始点sから各頂点への最短距離
     #n:頂点数,　w:辺の数, cost[u][v] : 辺uvのコスト(存在しないときはinf)
@@ -219,6 +198,7 @@ def dijkstra(s,n,w,cost):
                d[j] = min(d[j],d[v]+cost[v][j])
     return d
   
+  
 #unchi=0
 #for i in range(a):
   #unchi+=len(cost1[i])
@@ -239,6 +219,7 @@ cost = [[float("inf") for i in range(node_daisha)] for i in range(node_daisha)]
 #cost = [[float("inf") for i in range(node_daisha)] for i in range(node_daisha)] 
 #cost[u][v] : 辺uvのコスト(存在しないときはinf この場合は10**10)
 
+
 for i in range(len(node)):
   for j in range(len(cost1)):
     for k in range(len(cost1[j])):
@@ -246,22 +227,13 @@ for i in range(len(node)):
         cost1[j][k][0]=node[i][1]
       if node[i][0]==cost1[j][k][1]:
         cost1[j][k][1]=node[i][1]
-#print(node)  
 for i in range(len(cost1)):
   for j in range(len(cost1[i])):
     x,y,z = int(cost1[i][j][0]),int(cost1[i][j][1]),int(cost1[i][j][2])
     cost[x][y] = z
     #cost[y][x] = z
     
-#print(cost1)
-#unko=0
-#for i in range(a):
- # print(cost1[i])
-#print(unko)
-#print(edge_daisha)
-
-#print(dijkstra(2,node_daisha,edge_daisha,cost))
-
+    
 for i in range(e):
   query[i][1]=query[i][1].replace('ES','SE')
   query[i][2]=query[i][2].replace('ES','SE')
