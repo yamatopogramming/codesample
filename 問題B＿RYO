@@ -1,0 +1,85 @@
+k,l=map(int,input().split())#ヘッダ(k:駐車可能箇所情報の行数、l:配達先情報の行の行数)
+park_info=[input().split() for i in range(k)]#駐車可能箇所情報
+dest_info=[input().split() for i in range(l)]#配達先情報
+sharyo=[[] for i in range(k)]#車両距離行列
+for i in range(k):
+  sharyo[i]=list(map(int,input().split()))
+daisha=[[] for i in range(l)]#台車距離行列
+for i in range(l):
+  daisha[i]=list(map(int,input().split()))
+park_dest=[[] for i in range(l)]#配達先と駐車箇所の距離行列
+for i in range(l):
+  for j in range(k):
+    park_dest[i]=daisha[i][:k]
+dest_dest=[[] for i in range(l)]#配達先と配達先の距離行列
+for i in range(l):
+  dest_dest[i]=daisha[i][k:l+k]
+speed_sharyo=250#m/分
+speed_daisha=100#m/分
+limit=240#分
+
+
+park=[]#車両の移動の最短経路を考える用
+for i in range(k):
+  park.append(park_info[i][0])
+dest=[]
+for i in range(l):
+  dest.append(dest_info[i][0])
+  
+  
+#駐車可能箇所に対し配達先を割り当てる
+group=[[] for i in range(k)]
+for i in range(l):
+  for j in range(k):
+    if park_dest[i][j]==min(park_dest[i]):
+      group[j].append([dest[i],i,park_dest[i][j],float(dest_info[i][1]),float(dest_info[i][2])])
+#print(group)      
+      
+  
+  
+  
+#グループごとの配送先の回り方及び
+#def greed(group,info,matrix,speed):
+time=[0 for i in range(k)]#各グループを回る時間を記録
+root=[[] for i in range(k)]#ルートを記録
+root_info=[[] for i in range(k)]
+
+for i in range(k):
+  root[i].append(park[i])#駐車地点
+  root_info[i].append(park[i])
+  for m in range(len(group[i])):#それぞれのグループについて，その中の配送先数分繰り返す．
+    min_num = 5000
+    if m == 0:
+      for j in range(len(group[i])):
+        if min_num >= group[i][j][2]:
+          min_num = group[i][j][2]
+          min_des = group[i][j]
+      root[i].append(min_des[0])
+      root_info[i].append(min_des)
+      #print(root_info)
+  #二つ目から
+    else:
+      for j in range(len(group[i])):
+        if group[i][j][0] in root[i]:
+          continue;
+        else:
+          if min_num >= dest_dest[group[i][j][1]][root_info[i][m][1]]:
+            #print(m)
+            #print(min_num)
+            #print(dest_dest[group[i][j][1]][root_info[i][m][1]])
+            min_num = dest_dest[group[i][j][1]][root_info[i][m][1]]
+            min_des = group[i][j]
+            #print(min_des)
+            #print("===")
+      root[i].append(min_des[0])
+      root_info[i].append(min_des)
+
+for i in range(k):
+  time[i] += root_info[i][1][2]/speed_daisha + root_info[i][-1][2]/speed_daisha#駐車場～始点&終点の距離
+  for j in range(len(root[i])-1):
+    time[i] += root_info[i][j+1][3]#各node滞在時間
+    if j <= len(root[i])-3:#各node移動時間
+      time[i] += dest_dest[root_info[i][j+1][1]][root_info[i][j+2][1]]/ speed_daisha
+print(time) 
+#print(root)
+print(root_info)
