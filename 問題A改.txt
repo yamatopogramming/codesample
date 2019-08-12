@@ -249,7 +249,7 @@ for i in range(len(cost0)):
     x,y,z = int(cost0[i][j][0]),int(cost0[i][j][1]),int(cost0[i][j][2])
     costcost[x][y] = z
     
-#print(cost_road)   
+#print(costcost)   
 for i in range(e):
   if int(query[i][0])==1:#台車の移動
     query[i][1]=query[i][1].replace('ES','SE')
@@ -293,6 +293,16 @@ for i in range(e):
         d=node[m][1]
       elif('ES'in query[i][2])and(cost_road[d_index][2]==node[m][0]):
         d=node[m][1]
-    result=dijkstra(s,node_daisha,edge_sharyo,costcost)
+    query[i][1]=query[i][1].replace('ES','SE')
+    for j in range(len(node)):
+      if query[i][1]==node[j][0]:
+        sp=node[j][1]
+      if cost_road[s_index][1]==node[j][0]:
+        tr=node[j][1]
+    reset=copy.deepcopy(costcost[sp][tr])
+    costcost[sp][tr]=float("inf")
+    edge_sharyo_kai=edge_sharyo-1
+    result=dijkstra(s,node_sharyo,edge_sharyo_kai,costcost)
     print(s_pass+result[d]+d_pass)
+    costcost[sp][tr]=reset
   
