@@ -221,6 +221,7 @@ for i in range(len(node)):
 cost = [[float("inf") for i in range(node_daisha)] for i in range(node_daisha)]
 #cost = [[float("inf") for i in range(node_daisha)] for i in range(node_daisha)] 
 #cost[u][v] : 辺uvのコスト(存在しないときはinf この場合は10**10)
+costcost=[[float("inf") for i in range(node_daisha)] for i in range(node_daisha)]
 
 
 for i in range(len(node)):
@@ -235,6 +236,18 @@ for i in range(len(cost1)):
     x,y,z = int(cost1[i][j][0]),int(cost1[i][j][1]),int(cost1[i][j][2])
     cost[x][y] = z
     #cost[y][x] = z
+
+for i in range(len(node)):
+  for j in range(len(cost0)):
+    for k in range(len(cost0[j])):
+      if node[i][0]==cost0[j][k][0]:
+        cost0[j][k][0]=node[i][1]
+      if node[i][0]==cost0[j][k][1]:
+        cost0[j][k][1]=node[i][1]
+for i in range(len(cost0)):
+  for j in range(len(cost0[i])):
+    x,y,z = int(cost0[i][j][0]),int(cost0[i][j][1]),int(cost0[i][j][2])
+    costcost[x][y] = z
     
 #print(cost_road)   
 for i in range(e):
@@ -280,6 +293,6 @@ for i in range(e):
         d=node[m][1]
       elif('ES'in query[i][2])and(cost_road[d_index][2]==node[m][0]):
         d=node[m][1]
-    result=dijkstra(s,node_daisha,edge_daisha,cost)
+    result=dijkstra(s,node_daisha,edge_sharyo,costcost)
     print(s_pass+result[d]+d_pass)
-    
+  
