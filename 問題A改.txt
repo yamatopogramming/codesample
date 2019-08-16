@@ -251,7 +251,9 @@ for i in range(len(cost0)):
     
 #print(costcost)   
 for i in range(e):
-  if int(query[i][0])==1:#台車の移動
+  if query[i][1]==query[i][2]:
+    print(0)
+  elif int(query[i][0])==1:#台車の移動
     query[i][1]=query[i][1].replace('ES','SE')
     query[i][2]=query[i][2].replace('ES','SE')
     for j in range(len(node)):
@@ -261,18 +263,21 @@ for i in range(e):
         d=node[j][1]
     result=dijkstra(s,node_daisha,edge_daisha,cost)
     print(result[d])
+    #print(type(result[d]))
   else:#車両の移動
     for j in range(c):
       if query[i][1]==park_copy[j][0]:
         s_road=park_copy[j][1]
         start=j
-      elif query[i][2]==park_copy[j][0]:
+        #print(s_road)
+      if query[i][2]==park_copy[j][0]:
         d_road=park_copy[j][1]
         dest=j
+        #print(d_road)
     for k in range(a):
       if s_road==cost_road[k][0]:
         s_index=k
-      elif d_road==cost_road[k][0]:
+      if d_road==cost_road[k][0]:
         d_index=k
     if 'SE' in query[i][1]:
       s_pass=int(cost_road[s_index][3])-int(park_copy[start][2])
@@ -300,9 +305,13 @@ for i in range(e):
       if cost_road[s_index][1]==node[j][0]:
         tr=node[j][1]
     reset=copy.deepcopy(costcost[sp][tr])
+    reset2=copy.deepcopy(costcost[s][d])
     costcost[sp][tr]=float("inf")
+    if query[i][1]==query[i][2]:
+      costcost[s][d]=float("inf")
     edge_sharyo_kai=edge_sharyo-1
     result=dijkstra(s,node_sharyo,edge_sharyo_kai,costcost)
     print(s_pass+result[d]+d_pass)
     costcost[sp][tr]=reset
-  
+    costcost[s][d]=reset2
+    
